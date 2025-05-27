@@ -1397,6 +1397,45 @@ namespace boostedbbtt{
 
         return df1;
     }
+
+    ROOT::RDF::RNode pt(ROOT::RDF::RNode df, const std::string &outputname,
+                        const std::string &inputvector) {
+        return df.Define(
+            outputname,
+            [](const ROOT::Math::PtEtaPhiMVector &p4) { return (float)p4.pt(); },
+            {inputvector});
+    }
+    ROOT::RDF::RNode eta(ROOT::RDF::RNode df, const std::string &outputname,
+                        const std::string &inputvector) {
+        return df.Define(
+            outputname,
+            [](const ROOT::Math::PtEtaPhiMVector &p4) { return (float)p4.eta(); },
+            {inputvector});
+    }
+    ROOT::RDF::RNode phi(ROOT::RDF::RNode df, const std::string &outputname,
+                        const std::string &inputvector) {
+        return df.Define(outputname,
+                        [](const ROOT::Math::PtEtaPhiMVector &p4) {
+                            if (p4.pt() <
+                                0.0) // negative pt is used to mark invalid LVs
+                                return default_float;
+                            return (float)p4.phi();
+                        },
+                        {inputvector});
+    }
+    ROOT::RDF::RNode mass(ROOT::RDF::RNode df, const std::string &outputname,
+                        const std::string &inputvector) {
+        return df.Define(outputname,
+                        [](const ROOT::Math::PtEtaPhiMVector &p4) {
+                            if (p4.pt() <
+                                0.0) // negative pt is used to mark invalid LVs
+                                return default_float;
+                            return (float)p4.mass();
+                        },
+                        {inputvector});
+    }
+
+
 }
 
 } // end namespace quantities
