@@ -230,6 +230,11 @@ namespace boostedbbtt {
 
     ROOT::RDF::RNode mass(ROOT::RDF::RNode df, const std::string &outputname,
                         const std::string &inputvector);
+    ROOT::RDF::RNode p4_sum(ROOT::RDF::RNode df,  
+        const std::string &pppp,
+        const std::string &p0_fatjet, 
+        const std::string &p1_fatjet
+    );
          
 } // end namespace boostedbbtt
 } // end namespace quantities

@@ -47,8 +47,8 @@ def post_proc_varial(input_path, output_path, samples_list):
 
 if __name__ == '__main__':       
 
-    input_path = "/eos/user/j/jinwa/CROWN_output_first_dataMC_backup/2022EE_data2"
-    output_path = "/eos/user/j/jinwa/CROWN_post_output"
+    input_path = "/eos/user/j/jinwa/CROWN_post_output/June10/pre_result/data"
+    output_path = "/eos/user/j/jinwa/CROWN_post_output/June10/post_result"
 
     with open("/afs/cern.ch/user/j/jinwa/KingMaker/sample_database/datasets.yaml" , "r") as file:
         samples_list =  yaml.safe_load(file)

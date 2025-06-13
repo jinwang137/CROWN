@@ -1435,6 +1435,27 @@ namespace boostedbbtt{
                         {inputvector});
     }
 
+    ROOT::RDF::RNode p4_sum(ROOT::RDF::RNode df,  
+        const std::string &pppp,
+        const std::string &p0_fatjet, 
+        const std::string &p1_fatjet
+    ) {
+        auto df1 = df.Define(
+            pppp,
+            [](
+                const ROOT::Math::PtEtaPhiMVector &p4_1,
+                const ROOT::Math::PtEtaPhiMVector &p4_2) 
+                {
+                    ROOT::Math::PtEtaPhiMVector p4; 
+                    p4 = p4_1 + p4_2;
+                    return p4;
+                },
+                {p0_fatjet ,p1_fatjet}
+        );
+
+        return df1;
+    }
+
 
 }
 
