@@ -182,6 +182,27 @@ namespace boostedbbtt {
         const std::string &met_pt,
         const std::string &met_phi,
         const std::string &mass_caca);
+    
+    void DecomposeMomentum_Trans(
+        const ROOT::Math::PtEtaPhiMVector& p, 
+        const ROOT::Math::PtEtaPhiMVector& a, 
+        const ROOT::Math::PtEtaPhiMVector& b,
+        ROOT::Math::PtEtaPhiMVector& pa,
+        ROOT::Math::PtEtaPhiMVector& pb);
+
+    ROOT::RDF::RNode Mass_CA_Trans(
+        ROOT::RDF::RNode df,
+        const std::string &p0_fatjet,
+        const std::string &p1_fatjet,
+        const std::string &met_pt,
+        const std::string &met_phi,
+        const std::string &mass_caca);
+
+    ROOT::RDF::RNode Mass_corr(
+        ROOT::RDF::RNode df,
+        const std::string &corr,
+        const std::string &FatJet_mass,
+        const std::string &result);
 
     ROOT::RDF::RNode CA_ttMAss(
         ROOT::RDF::RNode df,

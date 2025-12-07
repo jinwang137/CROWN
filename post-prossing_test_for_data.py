@@ -29,7 +29,9 @@ def post_proc_varial(input_path, output_path, samples_list):
         try:
             df_mc = R.RDataFrame('ntuple', f)
             print("define df")
-            df_mc = df_mc.Filter('(HLT_AK8PFHT800_TrimMass50 || HLT_AK8PFJet400_TrimMass30 || HLT_AK8PFJet500 ||HLT_PFJet500||HLT_PFHT1050||HLT_PFHT500_PFMET100_PFMHT100_IDTight||HLT_PFHT700_PFMET85_PFMHT85_IDTight||HLT_PFHT800_PFMET75_PFMHT75_IDTight)')
+            #df_mc = df_mc.Filter('(HLT_AK8PFHT800_TrimMass50 || HLT_AK8PFJet400_TrimMass30 || HLT_AK8PFJet500 ||HLT_PFJet500||HLT_PFHT1050||HLT_PFHT500_PFMET100_PFMHT100_IDTight||HLT_PFHT700_PFMET85_PFMHT85_IDTight||HLT_PFHT800_PFMET75_PFMHT75_IDTight)')
+            #df_mc = df_mc.Filter('(trg_HLT_DoubleMediumDeepTauPFTauHPS35_L2NN_eta2p1 || trg_HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1)')
+            df_mc = df_mc.Filter('(trg_HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35 || trg_HLT_AK8PFJet420_MassSD30 || trg_HLT_PFMET120_PFMHT120_IDTight)')
             print('hlt finish')
             #col_names = df_mc.GetColumnNames()
         except:
@@ -47,8 +49,8 @@ def post_proc_varial(input_path, output_path, samples_list):
 
 if __name__ == '__main__':       
 
-    input_path = "/eos/user/j/jinwa/CROWN_post_output/June10/pre_result/data"
-    output_path = "/eos/user/j/jinwa/CROWN_post_output/June10/post_result"
+    input_path = "/eos/user/j/jinwa/CROWN_post_output/June16/pre-re/data/JetMET"
+    output_path = "/eos/user/j/jinwa/CROWN_post_output/June16/post-re/data/JetMET"
 
     with open("/afs/cern.ch/user/j/jinwa/KingMaker/sample_database/datasets.yaml" , "r") as file:
         samples_list =  yaml.safe_load(file)

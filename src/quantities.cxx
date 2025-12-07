@@ -1269,6 +1269,110 @@ namespace boostedbbtt{
         return df1;
     }
 
+    void DecomposeMomentum_Trans(
+        const ROOT::Math::PtEtaPhiMVector& p, 
+        const ROOT::Math::PtEtaPhiMVector& a, 
+        const ROOT::Math::PtEtaPhiMVector& b,
+        ROOT::Math::PtEtaPhiMVector& pa,
+        ROOT::Math::PtEtaPhiMVector& pb
+    ) {
+        using CartesianVector = ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>;
+
+   
+        TVector2 p2(p.Px(), p.Py());
+        TVector2 a2(a.Px(), a.Py());
+        TVector2 b2(b.Px(), b.Py());
+
+   
+        double det = a2.X() * b2.Y() - a2.Y() * b2.X();
+        if (std::abs(det) < 1e-10) {
+     
+            pa = ROOT::Math::PtEtaPhiMVector(0, 0, 0, 0);
+            pb = ROOT::Math::PtEtaPhiMVector(0, 0, 0, 0);
+            return;
+        }
+
+        // p = α·a + β·b
+        // [a.x  b.x][α] = [p.x]
+        // [a.y  b.y][β]   [p.y]
+        double alpha = (p2.X() * b2.Y() - p2.Y() * b2.X()) / det;
+        double beta  = (a2.X() * p2.Y() - a2.Y() * p2.X()) / det;
+
+        TVector2 pa2 = alpha * a2;
+        TVector2 pb2 = beta * b2;
+
+        double total_E = p.E();
+        double total_p2 = p2.Mod2();
+        double pa_E = total_E * (pa2.Mod2() / total_p2);
+        double pb_E = total_E * (pb2.Mod2() / total_p2);
+
+        CartesianVector pa_cart(pa2.X(), pa2.Y(), 0.0, pa_E);
+        CartesianVector pb_cart(pb2.X(), pb2.Y(), 0.0, pb_E);
+
+        pa = ROOT::Math::PtEtaPhiMVector(pa_cart.Pt(), pa_cart.Eta(), pa_cart.Phi(), 0.0);
+        pb = ROOT::Math::PtEtaPhiMVector(pb_cart.Pt(), pb_cart.Eta(), pb_cart.Phi(), 0.0);
+    }
+
+
+    ROOT::RDF::RNode Mass_CA_Trans(
+        ROOT::RDF::RNode df,
+        const std::string &p0_fatjet,
+        const std::string &p1_fatjet,
+        const std::string &met_pt,
+        const std::string &met_phi,
+        const std::string &mass_caca
+    ) 
+    {
+        auto df1 = df.Define(
+            mass_caca,
+            [](
+                const ROOT::Math::PtEtaPhiMVector &p0,
+                const ROOT::Math::PtEtaPhiMVector &p1,
+                const float &pt_met,
+                const float &phi_met) {
+
+                    ROOT::Math::PtEtaPhiMVector p_MET(pt_met, 0, phi_met, pt_met);
+                    ROOT::Math::PtEtaPhiMVector p_Nu0, p_Nu1;
+                    ROOT::Math::PtEtaPhiMVector p00(p0.Pt(), 0, p0.Phi(), p0.Pt());
+                    ROOT::Math::PtEtaPhiMVector p11(p1.Pt(), 0, p1.Phi(), p1.Pt());
+
+                    DecomposeMomentum_Trans(p_MET, p00, p11, p_Nu0, p_Nu1);
+
+                    float Nu0Tau_pt = p_Nu0.Pt();
+                    float Nu1Tau_pt = p_Nu1.Pt();
+
+                    float x0_METtoNu_tau = p00.Pt() / (p00.Pt() + Nu0Tau_pt);
+                    float x1_METtoNu_tau = p11.Pt() / (p11.Pt() + Nu1Tau_pt);
+
+                    float x0x1 = x0_METtoNu_tau * x1_METtoNu_tau;
+
+                    return x0x1;
+                    },
+                    {p0_fatjet, p1_fatjet, met_pt, met_phi}
+        );
+        return df1;
+    }
+
+    ROOT::RDF::RNode Mass_corr(
+        ROOT::RDF::RNode df,
+        const std::string &corr,
+        const std::string &FatJet_mass,
+        const std::string &result
+    ) 
+    {
+        auto df1 = df.Define(
+            result,
+            [](
+                const float &xx,
+                const float &mass) {
+                    float Mass = mass*xx;
+                    return Mass;
+                    },
+                    {corr, FatJet_mass}
+        );
+        return df1;
+    }
+
     ROOT::RDF::RNode CA_ttMAss(
         ROOT::RDF::RNode df,
         const std::string &x0x1,
